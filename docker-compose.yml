@@ -1,0 +1,20 @@
+services:
+  perles-stock:
+    build: .
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.perles.rule=Host(`perles.ton-domaine.fr`)"
+      - "traefik.http.routers.perles.entrypoints=websecure"
+      - "traefik.http.routers.perles.tls.certresolver=letsencrypt"
+
+      # BasicAuth — remplacer la valeur par le hash généré avec :
+      #   htpasswd -nb tonnom tonmotdepasse | sed 's/\$/\$\$/g'
+      # Pour plusieurs utilisateurs, séparer par virgule.
+      - "traefik.http.routers.perles.middlewares=perles-auth"
+      - "traefik.http.middlewares.perles-auth.basicauth.users=admin:$$apr1$$CHANGEME$$CHANGEME"
+
+networks:
+  default:
+    external: true
+    name: traefik_network
