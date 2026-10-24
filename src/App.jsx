@@ -3,15 +3,13 @@ import autresData from './data/perles-autres.json'
 import hamaData from './data/perles-hama.json'
 import artkalData from './data/perles-artkal.json'
 import ProjetsPage from './ProjetsPage'
+import PerleCard from './components/PerleCard'
+import { stockKey, evalStock } from './utils/stock'
 
 const STOCK_ILLIMITE = ['H01', 'H07']
 
 const perles = [
-  ...autresData.map(p => ({
-    ...p,
-    marque: 'autres',
-    stock: STOCK_ILLIMITE.includes(p.code) ? 1390 : 390,
-  })),
+  ...autresData.map(p => ({ ...p, marque: 'autres', stock: STOCK_ILLIMITE.includes(p.code) ? 1390 : 390 })),
   ...hamaData.map(p => ({ ...p, marque: 'hama', stock: 0 })),
   ...artkalData.map(p => ({ ...p, marque: 'artkal', stock: 0 })),
 ]
@@ -23,11 +21,7 @@ const MARQUES = [
   { id: 'autres', label: 'Autres' },
 ]
 
-const stockKey = (marque, code) => `${marque}-${code}`
-
-const defaultStock = Object.fromEntries(
-  perles.map(p => [stockKey(p.marque, p.code), p.stock])
-)
+const defaultStock = Object.fromEntries(perles.map(p => [stockKey(p.marque, p.code), p.stock]))
 
 function loadStock() {
   try {
@@ -42,21 +36,11 @@ function saveStock(stocks) {
   localStorage.setItem('perles-stock', JSON.stringify(stocks))
 }
 
-function isLight(hex) {
-  const r = parseInt(hex.slice(1, 3), 16)
-  const g = parseInt(hex.slice(3, 5), 16)
-  const b = parseInt(hex.slice(5, 7), 16)
-  return (r * 299 + g * 587 + b * 114) / 1000 > 140
-}
-
-function evalStock(value, currentStock) {
-  const v = value.trim()
-  if (/^[+-]\d+$/.test(v)) return Math.max(0, currentStock + parseInt(v))
-  if (/^\d+\s*[+\-*/]\s*\d+(\.\d+)?$/.test(v)) {
-    // eslint-disable-next-line no-new-func
-    return Math.max(0, Math.round(Function('"use strict";return(' + v + ')')()))
-  }
-  return Math.max(0, parseInt(v) || 0)
+const compteParMarque = {
+  toutes: perles.length,
+  hama:   hamaData.length,
+  artkal: artkalData.length,
+  autres: autresData.length,
 }
 
 export default function App() {
@@ -75,13 +59,6 @@ export default function App() {
     : (marque === 'toutes' ? perles : perles.filter(p => p.marque === marque))
 
   const groupes = [...new Set(perlesFiltrees.map(p => p.groupe))]
-
-  const compteParMarque = {
-    toutes: perles.length,
-    hama:   hamaData.length,
-    artkal: artkalData.length,
-    autres: autresData.length,
-  }
 
   function updateStock(marque, code, delta) {
     const k = stockKey(marque, code)
@@ -157,9 +134,7 @@ export default function App() {
                 }`}
               >
                 {m.label}
-                <span className="ml-1.5 text-xs opacity-60">
-                  {compteParMarque[m.id]}
-                </span>
+                <span className="ml-1.5 text-xs opacity-60">{compteParMarque[m.id]}</span>
               </button>
             ))}
             <input
@@ -178,94 +153,38 @@ export default function App() {
           </main>
         )}
 
-        {page === 'stock' && <main className="space-y-10">
-          {groupes.map(groupe => (
-            <section key={groupe}>
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3 pb-2 border-b border-gray-200">
-                {groupe}
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {perlesFiltrees
-                  .filter(p => p.groupe === groupe)
-                  .map(perle => {
-                    const k = stockKey(perle.marque, perle.code)
-                    const stock = stocks[k] ?? 0
-                    const light = isLight(perle.hex)
-                    const textColor = light ? '#111' : '#fff'
-                    const subColor  = light ? '#444' : '#ccc'
-                    const isEditing = editing === k
+        {page === 'stock' && (
+          <main className="space-y-10">
+            {groupes.map(groupe => (
+              <section key={groupe}>
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3 pb-2 border-b border-gray-200">
+                  {groupe}
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  {perlesFiltrees
+                    .filter(p => p.groupe === groupe)
+                    .map(perle => {
+                      const k = stockKey(perle.marque, perle.code)
+                      return (
+                        <PerleCard
+                          key={k}
+                          perle={perle}
+                          stock={stocks[k] ?? 0}
+                          isEditing={editing === k}
+                          onIncrement={() => updateStock(perle.marque, perle.code, 1)}
+                          onDecrement={() => updateStock(perle.marque, perle.code, -1)}
+                          onEdit={value => { setStockDirect(perle.marque, perle.code, value); setEditing(null) }}
+                          onStartEdit={() => setEditing(k)}
+                          onCancelEdit={() => setEditing(null)}
+                        />
+                      )
+                    })}
+                </div>
+              </section>
+            ))}
+          </main>
+        )}
 
-                    return (
-                      <div
-                        key={k}
-                        className="rounded-xl p-3 flex flex-col justify-between gap-1 min-h-30 shadow-sm"
-                        style={{ backgroundColor: perle.hex }}
-                      >
-                        {/* Contrôles stock */}
-                        <div className="flex items-center justify-between gap-1">
-                          <button
-                            onClick={() => updateStock(perle.marque, perle.code, -1)}
-                            className="w-5 h-5 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80"
-                            style={{ backgroundColor: light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.15)', color: textColor }}
-                          >
-                            −
-                          </button>
-
-                          {isEditing ? (
-                            <input
-                              type="text"
-                              defaultValue={stock}
-                              autoFocus
-                              onBlur={e => {
-                                setStockDirect(perle.marque, perle.code, e.target.value)
-                                setEditing(null)
-                              }}
-                              onKeyDown={e => {
-                                if (e.key === 'Enter') e.target.blur()
-                                if (e.key === 'Escape') setEditing(null)
-                              }}
-                              className="w-14 text-center text-[11px] font-semibold tabular-nums rounded px-0.5 bg-white/30 outline-none"
-                              style={{ color: textColor }}
-                            />
-                          ) : (
-                            <span
-                              className="text-[11px] font-semibold tabular-nums cursor-pointer"
-                              style={{ color: subColor }}
-                              onClick={() => setEditing(k)}
-                              title="Cliquer pour modifier"
-                            >
-                              {stock}
-                            </span>
-                          )}
-
-                          <button
-                            onClick={() => updateStock(perle.marque, perle.code, 1)}
-                            className="w-5 h-5 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80"
-                            style={{ backgroundColor: light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.15)', color: textColor }}
-                          >
-                            +
-                          </button>
-                        </div>
-
-                        {/* Infos couleur */}
-                        <div className="flex flex-col gap-0.5">
-                          <span className="text-xs font-bold tracking-wide" style={{ color: textColor }}>
-                            {perle.code}
-                          </span>
-                          <span className="text-[11px] leading-snug" style={{ color: textColor }}>
-                            {perle.nom}
-                          </span>
-                          <span className="text-[10px] font-mono mt-0.5" style={{ color: subColor }}>
-                            {perle.hex}
-                          </span>
-                        </div>
-                      </div>
-                    )
-                  })}
-              </div>
-            </section>
-          ))}
-        </main>}
       </div>
     </div>
   )
