@@ -1,0 +1,674 @@
+[
+  {
+    "code": "H01",
+    "nom": "Blanc pur",
+    "hex": "#FFFFFF",
+    "plaque": 1,
+    "groupe": "Échelle des Gris & Neutres"
+  },
+  {
+    "code": "H02",
+    "nom": "Gris très clair",
+    "hex": "#E5E5E5",
+    "plaque": 1,
+    "groupe": "Échelle des Gris & Neutres"
+  },
+  {
+    "code": "H03",
+    "nom": "Gris moyen",
+    "hex": "#808080",
+    "plaque": 1,
+    "groupe": "Échelle des Gris & Neutres"
+  },
+  {
+    "code": "H04",
+    "nom": "Gris foncé / Anthracite",
+    "hex": "#4A4A4A",
+    "plaque": 1,
+    "groupe": "Échelle des Gris & Neutres"
+  },
+  {
+    "code": "H05",
+    "nom": "Gris très foncé",
+    "hex": "#2C2C2C",
+    "plaque": 1,
+    "groupe": "Échelle des Gris & Neutres"
+  },
+  {
+    "code": "H07",
+    "nom": "Noir",
+    "hex": "#000000",
+    "plaque": 1,
+    "groupe": "Échelle des Gris & Neutres"
+  },
+  {
+    "code": "B03",
+    "nom": "Vert herbe / vert vif",
+    "hex": "#5CA244",
+    "plaque": 1,
+    "groupe": "Verts & Bleus"
+  },
+  {
+    "code": "B05",
+    "nom": "Vert feuillage moyen",
+    "hex": "#3B844A",
+    "plaque": 1,
+    "groupe": "Verts & Bleus"
+  },
+  {
+    "code": "B08",
+    "nom": "Vert sapin / vert foncé",
+    "hex": "#1F5A36",
+    "plaque": 1,
+    "groupe": "Verts & Bleus"
+  },
+  {
+    "code": "C03",
+    "nom": "Bleu ciel clair",
+    "hex": "#85C2D6",
+    "plaque": 1,
+    "groupe": "Verts & Bleus"
+  },
+  {
+    "code": "C05",
+    "nom": "Bleu moyen / bleu pété",
+    "hex": "#2F7DA1",
+    "plaque": 1,
+    "groupe": "Verts & Bleus"
+  },
+  {
+    "code": "C08",
+    "nom": "Bleu nuit / bleu marine",
+    "hex": "#232B5B",
+    "plaque": 1,
+    "groupe": "Verts & Bleus"
+  },
+  {
+    "code": "D09",
+    "nom": "Lilas / mauve pastel",
+    "hex": "#A390BC",
+    "plaque": 1,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "D06",
+    "nom": "Violet moyen",
+    "hex": "#6C4A83",
+    "plaque": 1,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "D07",
+    "nom": "Violet foncé / indigo",
+    "hex": "#3C2454",
+    "plaque": 1,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E02",
+    "nom": "Rose pastel clair",
+    "hex": "#E8A3B8",
+    "plaque": 1,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E04",
+    "nom": "Rose vif / magenta",
+    "hex": "#B54378",
+    "plaque": 1,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "F05",
+    "nom": "Rouge brique / profond",
+    "hex": "#A32B2B",
+    "plaque": 1,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "G01",
+    "nom": "Beige / chair très clair",
+    "hex": "#F2D1B3",
+    "plaque": 1,
+    "groupe": "Teintes Chaudes & Bruns"
+  },
+  {
+    "code": "G05",
+    "nom": "Caramel / ocre",
+    "hex": "#B88344",
+    "plaque": 1,
+    "groupe": "Teintes Chaudes & Bruns"
+  },
+  {
+    "code": "G07",
+    "nom": "Marron terre / brun clair",
+    "hex": "#6E4935",
+    "plaque": 1,
+    "groupe": "Teintes Chaudes & Bruns"
+  },
+  {
+    "code": "A04",
+    "nom": "Jaune pastel / citron",
+    "hex": "#C7D35E",
+    "plaque": 1,
+    "groupe": "Teintes Chaudes & Bruns"
+  },
+  {
+    "code": "A06",
+    "nom": "Orange pastel / abricot",
+    "hex": "#F4A06B",
+    "plaque": 1,
+    "groupe": "Teintes Chaudes & Bruns"
+  },
+  {
+    "code": "A07",
+    "nom": "Saumon / pêche",
+    "hex": "#F28D77",
+    "plaque": 1,
+    "groupe": "Teintes Chaudes & Bruns"
+  },
+  {
+    "code": "B12",
+    "nom": "Vert forêt très foncé",
+    "hex": "#1C3B2B",
+    "plaque": 2,
+    "groupe": "Verts & Bleus / Turquoises"
+  },
+  {
+    "code": "C11",
+    "nom": "Vert canard / Sarcelle",
+    "hex": "#2D6B6A",
+    "plaque": 2,
+    "groupe": "Verts & Bleus / Turquoises"
+  },
+  {
+    "code": "C10",
+    "nom": "Bleu canard / Turquoise",
+    "hex": "#2D7A8C",
+    "plaque": 2,
+    "groupe": "Verts & Bleus / Turquoises"
+  },
+  {
+    "code": "C02",
+    "nom": "Bleu turquoise clair",
+    "hex": "#6BA2B5",
+    "plaque": 2,
+    "groupe": "Verts & Bleus / Turquoises"
+  },
+  {
+    "code": "D03",
+    "nom": "Bleu nuit / Indigo foncé",
+    "hex": "#242240",
+    "plaque": 2,
+    "groupe": "Verts & Bleus / Turquoises"
+  },
+  {
+    "code": "C07",
+    "nom": "Bleu pétrole foncé",
+    "hex": "#2B4360",
+    "plaque": 2,
+    "groupe": "Verts & Bleus / Turquoises"
+  },
+  {
+    "code": "C06",
+    "nom": "Bleu denim / Bleu acier",
+    "hex": "#436080",
+    "plaque": 2,
+    "groupe": "Verts & Bleus / Turquoises"
+  },
+  {
+    "code": "C13",
+    "nom": "Bleu pastel clair",
+    "hex": "#A1B8C7",
+    "plaque": 2,
+    "groupe": "Verts & Bleus / Turquoises"
+  },
+  {
+    "code": "D15",
+    "nom": "Violet très foncé",
+    "hex": "#3E2741",
+    "plaque": 2,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "D21",
+    "nom": "Prune / Violet profond",
+    "hex": "#5C2B4E",
+    "plaque": 2,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "D18",
+    "nom": "Mauve moyen / Violet fumé",
+    "hex": "#7B5878",
+    "plaque": 2,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "D19",
+    "nom": "Lavande / Parme pastel",
+    "hex": "#B098B5",
+    "plaque": 2,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E07",
+    "nom": "Rose vif / Magenta moyen",
+    "hex": "#D2466A",
+    "plaque": 2,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E13",
+    "nom": "Fuchsia / Rose framboise",
+    "hex": "#B8396B",
+    "plaque": 2,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E03",
+    "nom": "Rose poudré clair",
+    "hex": "#E8A3B8",
+    "plaque": 2,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E08",
+    "nom": "Vieux rose / Rose thé",
+    "hex": "#CCA3AC",
+    "plaque": 2,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "F08",
+    "nom": "Rouge brique / Terracotta",
+    "hex": "#AC3A3A",
+    "plaque": 2,
+    "groupe": "Rouges, Beiges & Bruns"
+  },
+  {
+    "code": "F13",
+    "nom": "Rouge corail / Vermillon",
+    "hex": "#D9534F",
+    "plaque": 2,
+    "groupe": "Rouges, Beiges & Bruns"
+  },
+  {
+    "code": "A10",
+    "nom": "Terracotta clair / Ocre",
+    "hex": "#C26D51",
+    "plaque": 2,
+    "groupe": "Rouges, Beiges & Bruns"
+  },
+  {
+    "code": "A13",
+    "nom": "Beige sablé / Ocre clair",
+    "hex": "#D8A67B",
+    "plaque": 2,
+    "groupe": "Rouges, Beiges & Bruns"
+  },
+  {
+    "code": "G08",
+    "nom": "Marron foncé / Brun terre",
+    "hex": "#4A2E2B",
+    "plaque": 2,
+    "groupe": "Rouges, Beiges & Bruns"
+  },
+  {
+    "code": "G13",
+    "nom": "Brun moyen / Chocolat",
+    "hex": "#7B4A3C",
+    "plaque": 2,
+    "groupe": "Rouges, Beiges & Bruns"
+  },
+  {
+    "code": "G09",
+    "nom": "Beige camel / Brun clair",
+    "hex": "#AD7A5E",
+    "plaque": 2,
+    "groupe": "Rouges, Beiges & Bruns"
+  },
+  {
+    "code": "A11",
+    "nom": "Jaune paille / Sable",
+    "hex": "#EAD29A",
+    "plaque": 2,
+    "groupe": "Rouges, Beiges & Bruns"
+  },
+  {
+    "code": "A03",
+    "nom": "Jaune / Tangerine",
+    "hex": "#FFA630",
+    "plaque": 3,
+    "groupe": "Verts & Citrons"
+  },
+  {
+    "code": "B18",
+    "nom": "Vert citron clair (Lime)",
+    "hex": "#E6EE49",
+    "plaque": 3,
+    "groupe": "Verts & Citrons"
+  },
+  {
+    "code": "B14",
+    "nom": "Vert pistache / clair",
+    "hex": "#ADE946",
+    "plaque": 3,
+    "groupe": "Verts & Citrons"
+  },
+  {
+    "code": "B17",
+    "nom": "Vert fougère / olive",
+    "hex": "#9BB13A",
+    "plaque": 3,
+    "groupe": "Verts & Citrons"
+  },
+  {
+    "code": "B20",
+    "nom": "Vert d'eau / céladon",
+    "hex": "#7FA293",
+    "plaque": 3,
+    "groupe": "Verts & Citrons"
+  },
+  {
+    "code": "B10",
+    "nom": "Vert canard / sarcelle",
+    "hex": "#4A8B88",
+    "plaque": 3,
+    "groupe": "Verts & Citrons"
+  },
+  {
+    "code": "B19",
+    "nom": "Vert émeraude",
+    "hex": "#2A8B63",
+    "plaque": 3,
+    "groupe": "Verts & Citrons"
+  },
+  {
+    "code": "B07",
+    "nom": "Vert moyen",
+    "hex": "#3DA773",
+    "plaque": 3,
+    "groupe": "Verts & Citrons"
+  },
+  {
+    "code": "D16",
+    "nom": "Violet pastel clair",
+    "hex": "#A8A6D0",
+    "plaque": 3,
+    "groupe": "Bleus & Violets"
+  },
+  {
+    "code": "D11",
+    "nom": "Bleu-gris lavande",
+    "hex": "#767FA2",
+    "plaque": 3,
+    "groupe": "Bleus & Violets"
+  },
+  {
+    "code": "D02",
+    "nom": "Bleu-violet",
+    "hex": "#4D62B2",
+    "plaque": 3,
+    "groupe": "Bleus & Violets"
+  },
+  {
+    "code": "C16",
+    "nom": "Bleu roi / indigo",
+    "hex": "#314995",
+    "plaque": 3,
+    "groupe": "Bleus & Violets"
+  },
+  {
+    "code": "D08",
+    "nom": "Mauve clair",
+    "hex": "#A583B4",
+    "plaque": 3,
+    "groupe": "Bleus & Violets"
+  },
+  {
+    "code": "D12",
+    "nom": "Violet orchidée",
+    "hex": "#925287",
+    "plaque": 3,
+    "groupe": "Bleus & Violets"
+  },
+  {
+    "code": "D20",
+    "nom": "Violet foncé",
+    "hex": "#4C2263",
+    "plaque": 3,
+    "groupe": "Bleus & Violets"
+  },
+  {
+    "code": "D14",
+    "nom": "Prune / violet profond",
+    "hex": "#4D1B5B",
+    "plaque": 3,
+    "groupe": "Bleus & Violets"
+  },
+  {
+    "code": "E01",
+    "nom": "Rose poudré",
+    "hex": "#D19E9E",
+    "plaque": 3,
+    "groupe": "Roses, Rouges & Bruns"
+  },
+  {
+    "code": "E12",
+    "nom": "Rose bonbon",
+    "hex": "#C25B81",
+    "plaque": 3,
+    "groupe": "Roses, Rouges & Bruns"
+  },
+  {
+    "code": "E05",
+    "nom": "Framboise",
+    "hex": "#B03D69",
+    "plaque": 3,
+    "groupe": "Roses, Rouges & Bruns"
+  },
+  {
+    "code": "E13",
+    "nom": "Bordeaux / lie-de-vin",
+    "hex": "#681639",
+    "plaque": 3,
+    "groupe": "Roses, Rouges & Bruns"
+  },
+  {
+    "code": "G02",
+    "nom": "Pêche / chair",
+    "hex": "#E09A85",
+    "plaque": 3,
+    "groupe": "Roses, Rouges & Bruns"
+  },
+  {
+    "code": "G03",
+    "nom": "Brun terre cuite clair",
+    "hex": "#B87F6E",
+    "plaque": 3,
+    "groupe": "Roses, Rouges & Bruns"
+  },
+  {
+    "code": "F10",
+    "nom": "Marron chocolat",
+    "hex": "#593623",
+    "plaque": 3,
+    "groupe": "Roses, Rouges & Bruns"
+  },
+  {
+    "code": "F07",
+    "nom": "Brun brique / terre d'ombre",
+    "hex": "#5E1D1D",
+    "plaque": 3,
+    "groupe": "Roses, Rouges & Bruns"
+  },
+  {
+    "code": "D05",
+    "nom": "Violet clair / Lilas vif",
+    "hex": "#8A66AB",
+    "plaque": 4,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E09",
+    "nom": "Parme / Rose boisé",
+    "hex": "#A66B98",
+    "plaque": 4,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E15",
+    "nom": "Rose saumoné clair",
+    "hex": "#E8A29A",
+    "plaque": 4,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E11",
+    "nom": "Peau / Chair clair",
+    "hex": "#F2C4B2",
+    "plaque": 4,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E10",
+    "nom": "Orchidée / Magenta doux",
+    "hex": "#BC5295",
+    "plaque": 4,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E06",
+    "nom": "Rose framboise vif",
+    "hex": "#B83E68",
+    "plaque": 4,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "F14",
+    "nom": "Terracotta clair",
+    "hex": "#C98072",
+    "plaque": 4,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "E14",
+    "nom": "Pêche / Chair rosé",
+    "hex": "#DB9B86",
+    "plaque": 4,
+    "groupe": "Violets & Roses"
+  },
+  {
+    "code": "F04",
+    "nom": "Rouge vif / Coquelicot",
+    "hex": "#D8363A",
+    "plaque": 4,
+    "groupe": "Rouges & Terracotta"
+  },
+  {
+    "code": "F12",
+    "nom": "Red corail / Cerise",
+    "hex": "#CA3F4E",
+    "plaque": 4,
+    "groupe": "Rouges & Terracotta"
+  },
+  {
+    "code": "F09",
+    "nom": "Rouge brique profond",
+    "hex": "#983A43",
+    "plaque": 4,
+    "groupe": "Rouges & Terracotta"
+  },
+  {
+    "code": "F01",
+    "nom": "Rouge framboise foncé",
+    "hex": "#AD424A",
+    "plaque": 4,
+    "groupe": "Rouges & Terracotta"
+  },
+  {
+    "code": "F06",
+    "nom": "Brun brique foncé",
+    "hex": "#6B373D",
+    "plaque": 4,
+    "groupe": "Rouges & Terracotta"
+  },
+  {
+    "code": "F03",
+    "nom": "Rouge orangé / Vermillon",
+    "hex": "#C94336",
+    "plaque": 4,
+    "groupe": "Rouges & Terracotta"
+  },
+  {
+    "code": "F02",
+    "nom": "Rouge brique vif",
+    "hex": "#B53B36",
+    "plaque": 4,
+    "groupe": "Rouges & Terracotta"
+  },
+  {
+    "code": "A14",
+    "nom": "Marron rouge / Terracotta",
+    "hex": "#8B3A33",
+    "plaque": 4,
+    "groupe": "Rouges & Terracotta"
+  },
+  {
+    "code": "G17",
+    "nom": "Taupe gris / Gris brun",
+    "hex": "#706363",
+    "plaque": 4,
+    "groupe": "Kakis, Gris & Teintes Sombres"
+  },
+  {
+    "code": "F11",
+    "nom": "Brun chocolat / Café",
+    "hex": "#42282A",
+    "plaque": 4,
+    "groupe": "Kakis, Gris & Teintes Sombres"
+  },
+  {
+    "code": "G14",
+    "nom": "Brun kaki / Olive sombre",
+    "hex": "#4A493B",
+    "plaque": 4,
+    "groupe": "Kakis, Gris & Teintes Sombres"
+  },
+  {
+    "code": "M06",
+    "nom": "Vert sauge foncé / Kaki",
+    "hex": "#596350",
+    "plaque": 4,
+    "groupe": "Kakis, Gris & Teintes Sombres"
+  },
+  {
+    "code": "H06",
+    "nom": "Gris anthracite foncé",
+    "hex": "#3D4348",
+    "plaque": 4,
+    "groupe": "Kakis, Gris & Teintes Sombres"
+  },
+  {
+    "code": "M12",
+    "nom": "Gris ardoise / Gris plomb",
+    "hex": "#4A4E54",
+    "plaque": 4,
+    "groupe": "Kakis, Gris & Teintes Sombres"
+  },
+  {
+    "code": "M09",
+    "nom": "Kaki clair / Taupe kaki",
+    "hex": "#7C7867",
+    "plaque": 4,
+    "groupe": "Kakis, Gris & Teintes Sombres"
+  },
+  {
+    "code": "M05",
+    "nom": "Vert sauge clair / Lichen",
+    "hex": "#8F9683",
+    "plaque": 4,
+    "groupe": "Kakis, Gris & Teintes Sombres"
+  }
+]

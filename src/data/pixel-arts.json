@@ -1,0 +1,7 @@
+[
+  { "id": "pokemon-bulbasaur",  "nom": "Bulbasaur",  "image": "/pixel-art/pokemon/gen-1/1_Bulbasaur.png",  "categorie": "Pokémon Gen 1" },
+  { "id": "pokemon-ivysaur",    "nom": "Ivysaur",    "image": "/pixel-art/pokemon/gen-1/2_Ivysaur.png",    "categorie": "Pokémon Gen 1" },
+  { "id": "pokemon-venusaur",   "nom": "Venusaur",   "image": "/pixel-art/pokemon/gen-1/3_Venusaur.png",   "categorie": "Pokémon Gen 1" },
+  { "id": "pokemon-charmander", "nom": "Charmander", "image": "/pixel-art/pokemon/gen-1/4_Charmander.png", "categorie": "Pokémon Gen 1" },
+  { "id": "pokemon-charmeleon", "nom": "Charmeleon", "image": "/pixel-art/pokemon/gen-1/5_Charmeleon.png", "categorie": "Pokémon Gen 1" }
+]
