@@ -1,6 +1,6 @@
 import { isLight } from '../utils/color'
 
-export default function PerleCard({ perle, stock, isEditing, onIncrement, onDecrement, onEdit, onStartEdit, onCancelEdit }) {
+export default function PerleCard({ perle, stock, isEditing, isAdmin, onIncrement, onDecrement, onEdit, onStartEdit, onCancelEdit }) {
   const light = isLight(perle.hex)
   const textColor = light ? '#111' : '#fff'
   const subColor  = light ? '#444' : '#ccc'
@@ -11,15 +11,17 @@ export default function PerleCard({ perle, stock, isEditing, onIncrement, onDecr
       style={{ backgroundColor: perle.hex }}
     >
       <div className="flex items-center justify-between gap-1">
-        <button
-          onClick={onDecrement}
-          className="w-5 h-5 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80"
-          style={{ backgroundColor: light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.15)', color: textColor }}
-        >
-          −
-        </button>
+        {isAdmin && (
+          <button
+            onClick={onDecrement}
+            className="w-5 h-5 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80"
+            style={{ backgroundColor: light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.15)', color: textColor }}
+          >
+            −
+          </button>
+        )}
 
-        {isEditing ? (
+        {isAdmin && isEditing ? (
           <input
             type="text"
             defaultValue={stock}
@@ -34,22 +36,24 @@ export default function PerleCard({ perle, stock, isEditing, onIncrement, onDecr
           />
         ) : (
           <span
-            className="text-[11px] font-semibold tabular-nums cursor-pointer"
+            className={`text-[11px] font-semibold tabular-nums ${isAdmin ? 'cursor-pointer' : ''}`}
             style={{ color: subColor }}
-            onClick={onStartEdit}
-            title="Cliquer pour modifier"
+            onClick={isAdmin ? onStartEdit : undefined}
+            title={isAdmin ? 'Cliquer pour modifier' : undefined}
           >
             {stock}
           </span>
         )}
 
-        <button
-          onClick={onIncrement}
-          className="w-5 h-5 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80"
-          style={{ backgroundColor: light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.15)', color: textColor }}
-        >
-          +
-        </button>
+        {isAdmin && (
+          <button
+            onClick={onIncrement}
+            className="w-5 h-5 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80"
+            style={{ backgroundColor: light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.15)', color: textColor }}
+          >
+            +
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col gap-0.5">
