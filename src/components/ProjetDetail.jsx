@@ -2,7 +2,7 @@ import { useState } from 'react'
 import CouleurForm from './CouleurForm'
 import CouleurRow from './CouleurRow'
 
-export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, dejaTermine, onBack, onAjouterCouleur, onUpdateCount, onRemoveCouleur, onValider }) {
+export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, dejaTermine, isAdmin, onBack, onAjouterCouleur, onUpdateCount, onRemoveCouleur, onValider }) {
   const [confirming, setConfirming] = useState(false)
 
   const totalPerles = projetCouleurs.reduce((s, e) => s + e.count, 0)
@@ -40,7 +40,7 @@ export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, d
         </div>
 
         <div className="flex-1 min-w-0">
-          {!dejaTermine && (
+          {isAdmin && !dejaTermine && (
             <CouleurForm perles={perles} onAjouter={onAjouterCouleur} />
           )}
 
@@ -70,6 +70,7 @@ export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, d
                       stockVal={stockVal}
                       ok={stockVal >= entry.count}
                       dejaTermine={dejaTermine}
+                      isAdmin={isAdmin}
                       onUpdateCount={val => onUpdateCount(idx, val)}
                       onRemove={() => onRemoveCouleur(idx)}
                     />
@@ -77,7 +78,7 @@ export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, d
                 })}
               </div>
 
-              {!dejaTermine && (
+              {isAdmin && !dejaTermine && (
                 <div className="mt-6">
                   {!confirming ? (
                     <button

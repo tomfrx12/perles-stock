@@ -20,7 +20,7 @@ function saveCouleurs(c) {
   localStorage.setItem('perles-projets-couleurs', JSON.stringify(c))
 }
 
-export default function ProjetsPage({ perles, stocks, batchUpdateStock }) {
+export default function ProjetsPage({ perles, stocks, batchUpdateStock, isAdmin }) {
   const [projets, setProjets] = useState(loadProjets)
   const [statuts, setStatuts] = useState(loadStatuts)
   const [couleurs, setCouleurs] = useState(loadCouleurs)
@@ -100,6 +100,7 @@ export default function ProjetsPage({ perles, stocks, batchUpdateStock }) {
         perles={perles}
         stocks={stocks}
         dejaTermine={statuts[selected.id] === 'terminé'}
+        isAdmin={isAdmin}
         onBack={() => setSelected(null)}
         onAjouterCouleur={ajouterCouleur}
         onUpdateCount={updateCount}
@@ -146,7 +147,7 @@ export default function ProjetsPage({ perles, stocks, batchUpdateStock }) {
         ))}
       </div>
 
-      <div className="mt-10">
+      {isAdmin && <div className="mt-10">
         {!showAdd ? (
           <button
             onClick={() => setShowAdd(true)}
@@ -212,7 +213,7 @@ export default function ProjetsPage({ perles, stocks, batchUpdateStock }) {
             </div>
           </form>
         )}
-      </div>
+      </div>}
     </div>
   )
 }
