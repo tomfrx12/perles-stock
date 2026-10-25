@@ -5,6 +5,7 @@ import artkalData from './data/perles-artkal.json'
 import ProjetsPage from './ProjetsPage'
 import PerleCard from './components/PerleCard'
 import { stockKey, evalStock } from './utils/stock'
+import PinModal from './components/PinModal'
 
 const STOCK_ILLIMITE = ['H01', 'H07']
 
@@ -49,16 +50,27 @@ export default function App() {
   const [search, setSearch] = useState('')
   const [stocks, setStocks] = useState(loadStock)
   const [editing, setEditing] = useState(null)
+  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('perles-admin') === '1')
+  const [showPin, setShowPin] = useState(false)
+
+  const marquesVisibles = isAdmin ? MARQUES : MARQUES.filter(m => m.id !== 'autres')
+  const perlesVisibles  = isAdmin ? perles  : perles.filter(p => p.marque !== 'autres')
 
   const perlesFiltrees = search.trim()
-    ? perles.filter(p =>
+    ? perlesVisibles.filter(p =>
         p.code.toLowerCase().includes(search.trim().toLowerCase()) ||
         p.nom.toLowerCase().includes(search.trim().toLowerCase()) ||
         p.hex.toLowerCase().includes(search.trim().toLowerCase())
       )
-    : (marque === 'toutes' ? perles : perles.filter(p => p.marque === marque))
+    : (marque === 'toutes' ? perlesVisibles : perlesVisibles.filter(p => p.marque === marque))
 
   const groupes = [...new Set(perlesFiltrees.map(p => p.groupe))]
+
+  function lockAdmin() {
+    localStorage.removeItem('perles-admin')
+    setIsAdmin(false)
+    if (marque === 'autres') setMarque('toutes')
+  }
 
   function updateStock(marque, code, delta) {
     const k = stockKey(marque, code)
@@ -93,13 +105,42 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
+      {showPin && (
+        <PinModal
+          onSuccess={() => { setIsAdmin(true); setShowPin(false) }}
+          onClose={() => setShowPin(false)}
+        />
+      )}
       <div className="max-w-5xl mx-auto px-4 py-10">
 
         <header className="mb-8 flex items-end justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Stock de Perles</h1>
             <p className="text-gray-400 mt-1 text-sm">
-              {compteParMarque.hama} Hama · {compteParMarque.artkal} Artkal · {compteParMarque.autres} Autres
+              {compteParMarque.hama} Hama · {compteParMarque.artkal} Artkal
+              {isAdmin ? (
+                <>
+                  {' · '}
+                  <button
+                    onClick={lockAdmin}
+                    className="hover:text-gray-600 transition-colors cursor-pointer"
+                    title="Verrouiller le mode admin"
+                  >
+                    {compteParMarque.autres} Autres 🔓
+                  </button>
+                </>
+              ) : (
+                <>
+                  {' · '}
+                  <button
+                    onClick={() => setShowPin(true)}
+                    className="hover:text-gray-500 transition-colors cursor-pointer"
+                    title=""
+                  >
+                    …
+                  </button>
+                </>
+              )}
             </p>
           </div>
           <nav className="flex gap-1 bg-gray-100 rounded-xl p-1">
@@ -121,7 +162,7 @@ export default function App() {
 
         {page === 'stock' && (
           <nav className="flex flex-wrap items-center gap-2 mb-10">
-            {MARQUES.map(m => (
+            {marquesVisibles.map(m => (
               <button
                 key={m.id}
                 onClick={() => { setMarque(m.id); setSearch('') }}
@@ -149,7 +190,7 @@ export default function App() {
 
         {page === 'projets' && (
           <main>
-            <ProjetsPage perles={perles} stocks={stocks} batchUpdateStock={batchUpdateStock} />
+            <ProjetsPage perles={perlesVisibles} stocks={stocks} batchUpdateStock={batchUpdateStock} isAdmin={isAdmin} />
           </main>
         )}
 
@@ -171,6 +212,7 @@ export default function App() {
                           perle={perle}
                           stock={stocks[k] ?? 0}
                           isEditing={editing === k}
+                          isAdmin={isAdmin}
                           onIncrement={() => updateStock(perle.marque, perle.code, 1)}
                           onDecrement={() => updateStock(perle.marque, perle.code, -1)}
                           onEdit={value => { setStockDirect(perle.marque, perle.code, value); setEditing(null) }}
