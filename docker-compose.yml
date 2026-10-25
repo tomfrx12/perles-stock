@@ -6,7 +6,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.perles.rule=Host(`perles.ton-domaine.fr`)"
       - "traefik.http.routers.perles.entrypoints=websecure"
-      - "traefik.http.routers.perles.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.perles.tls.certresolver=myresolver"
 
       # BasicAuth — remplacer la valeur par le hash généré avec :
       #   htpasswd -nb tonnom tonmotdepasse | sed 's/\$/\$\$/g'
