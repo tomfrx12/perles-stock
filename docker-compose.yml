@@ -4,7 +4,7 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.perles.rule=Host(`perles.ton-domaine.fr`)"
+      - "traefik.http.routers.perles.rule=Host(`perles.tom-fourneaux.fr`)"
       - "traefik.http.routers.perles.entrypoints=websecure"
       - "traefik.http.routers.perles.tls.certresolver=myresolver"
 
@@ -12,9 +12,10 @@ services:
       #   htpasswd -nb tonnom tonmotdepasse | sed 's/\$/\$\$/g'
       # Pour plusieurs utilisateurs, séparer par virgule.
       - "traefik.http.routers.perles.middlewares=perles-auth"
-      - "traefik.http.middlewares.perles-auth.basicauth.users=admin:$$apr1$$CHANGEME$$CHANGEME"
+      - "traefik.http.middlewares.perles-auth.basicauth.users=tom:$$apr1$$gdCmNr5c$$LDOYGf9QLXNkvvuYYju79."
+    networks:
+      - web
 
 networks:
-  default:
+  web:
     external: true
-    name: traefik_network
