@@ -1,8 +1,0 @@
-services:
-  perles-stock:
-    ports:
-      - "3000:3000"
-
-networks:
-  web:
-    external: false
