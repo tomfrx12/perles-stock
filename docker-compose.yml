@@ -2,6 +2,10 @@ services:
   perles-stock:
     build: .
     restart: unless-stopped
+    env_file:
+      - .env.local
+    volumes:
+      - ./uploads:/data/uploads
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.perles.rule=Host(`perles.tom-fourneaux.fr`)"
