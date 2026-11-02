@@ -1,5 +1,18 @@
 import { useState } from 'react'
 import initialProjets from './data/pixel-arts.json'
+
+const CATEGORIES = [
+  'Pokémon Gen 1',
+  'Pokémon Gen 2',
+  'Pokémon Gen 3',
+  'Pokémon Gen 4',
+  'Pokémon Gen 5',
+  'Pokémon Gen 6',
+  'Pokémon Gen 7',
+  'Pokémon Gen 8',
+  'Pokémon Gen 9',
+]
+
 import ProjetCard from './components/ProjetCard'
 import ProjetDetail from './components/ProjetDetail'
 
@@ -20,14 +33,17 @@ function saveCouleurs(c) {
   localStorage.setItem('perles-projets-couleurs', JSON.stringify(c))
 }
 
-export default function ProjetsPage({ perles, stocks, batchUpdateStock, isAdmin }) {
+export default function ProjetsPage({ perles, stocks, batchUpdateStock, isAdmin, onGoToStock }) {
   const [projets, setProjets] = useState(loadProjets)
   const [statuts, setStatuts] = useState(loadStatuts)
   const [couleurs, setCouleurs] = useState(loadCouleurs)
   const [searchProjets, setSearchProjets] = useState('')
   const [selected, setSelected] = useState(null)
   const [showAdd, setShowAdd] = useState(false)
-  const [addForm, setAddForm] = useState({ nom: '', image: '', categorie: '' })
+  const [addForm, setAddForm] = useState({ nom: '', categorie: '' })
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
 
   const projetCouleurs = selected ? (couleurs[selected.id] ?? []) : []
 
@@ -75,21 +91,52 @@ export default function ProjetsPage({ perles, stocks, batchUpdateStock, isAdmin 
     setSelected(null)
   }
 
-  function ajouterProjet(e) {
-    e.preventDefault()
-    if (!addForm.nom.trim() || !addForm.image.trim()) return
-    const image = addForm.image.trim().startsWith('/') ? addForm.image.trim() : `/${addForm.image.trim()}`
-    const nouveau = {
-      id: `custom-${Date.now()}`,
-      nom: addForm.nom.trim(),
-      image,
-      categorie: addForm.categorie.trim() || 'Personnalisé',
+  async function supprimerProjet(projet) {
+    if (projet.image.startsWith('/uploads/')) {
+      const filename = projet.image.split('/').pop()
+      try {
+        await fetch(`/api/upload/${filename}`, {
+          method: 'DELETE',
+          headers: { 'x-admin-pin': import.meta.env.VITE_ADMIN_PIN },
+        })
+      } catch {
+        // le fichier reste sur le disque, on retire quand même le projet de l'UI
+      }
     }
-    const newProjets = [...projets, nouveau]
+    const newProjets = projets.filter(p => p.id !== projet.id)
     setProjets(newProjets)
     localStorage.setItem('perles-projets-custom', JSON.stringify(newProjets.filter(p => p.id.startsWith('custom-'))))
-    setAddForm({ nom: '', image: '', categorie: '' })
-    setShowAdd(false)
+  }
+
+  async function ajouterProjet(e) {
+    e.preventDefault()
+    if (!addForm.nom.trim() || !selectedFile) return
+    setUploading(true)
+    setUploadError('')
+    try {
+      const formData = new FormData()
+      formData.append('name', addForm.nom.trim())
+      formData.append('image', selectedFile)
+      const res = await fetch('/api/upload', { method: 'POST', body: formData })
+      if (!res.ok) throw new Error('Erreur serveur')
+      const { path: imagePath } = await res.json()
+      const nouveau = {
+        id: `custom-${Date.now()}`,
+        nom: addForm.nom.trim(),
+        image: imagePath,
+        categorie: addForm.categorie || CATEGORIES[0],
+      }
+      const newProjets = [...projets, nouveau]
+      setProjets(newProjets)
+      localStorage.setItem('perles-projets-custom', JSON.stringify(newProjets.filter(p => p.id.startsWith('custom-'))))
+      setAddForm({ nom: '', categorie: '' })
+      setSelectedFile(null)
+      setShowAdd(false)
+    } catch {
+      setUploadError("L'upload a échoué, réessaie.")
+    } finally {
+      setUploading(false)
+    }
   }
 
   if (selected) {
@@ -101,6 +148,7 @@ export default function ProjetsPage({ perles, stocks, batchUpdateStock, isAdmin 
         stocks={stocks}
         dejaTermine={statuts[selected.id] === 'terminé'}
         isAdmin={isAdmin}
+        onGoToStock={onGoToStock}
         onBack={() => setSelected(null)}
         onAjouterCouleur={ajouterCouleur}
         onUpdateCount={updateCount}
@@ -134,13 +182,23 @@ export default function ProjetsPage({ perles, stocks, batchUpdateStock, isAdmin 
               {projetsFiltres
                 .filter(p => p.categorie === cat)
                 .map(projet => (
-                  <ProjetCard
-                    key={projet.id}
-                    projet={projet}
-                    termine={statuts[projet.id] === 'terminé'}
-                    nbCouleurs={(couleurs[projet.id] ?? []).length}
-                    onClick={() => selectProjet(projet)}
-                  />
+                  <div key={projet.id} className="relative">
+                    <ProjetCard
+                      projet={projet}
+                      termine={statuts[projet.id] === 'terminé'}
+                      nbCouleurs={(couleurs[projet.id] ?? []).length}
+                      onClick={() => selectProjet(projet)}
+                    />
+                    {isAdmin && projet.id.startsWith('custom-') && (
+                      <button
+                        onClick={e => { e.stopPropagation(); supprimerProjet(projet) }}
+                        className="absolute top-1.5 right-1.5 z-10 w-5 h-5 flex items-center justify-center rounded-full bg-white/80 hover:bg-red-100 text-gray-400 hover:text-red-500 text-xs shadow-sm transition-colors cursor-pointer"
+                        title="Supprimer"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
                 ))}
             </div>
           </section>
@@ -173,39 +231,43 @@ export default function ProjetsPage({ perles, stocks, batchUpdateStock, isAdmin 
               />
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Chemin de l'image</label>
+              <label className="text-xs text-gray-500 mb-1 block">Image</label>
               <input
-                type="text"
-                placeholder="ex : /pixel-art/pokemon/gen-1/25_Pikachu.png"
-                value={addForm.image}
-                onChange={e => setAddForm({ ...addForm, image: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm font-mono outline-none focus:border-gray-500"
-                required
+                type="file"
+                accept="image/*"
+                onChange={e => { setSelectedFile(e.target.files?.[0] ?? null); setUploadError('') }}
+                className="w-full text-sm text-gray-600 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer"
               />
-              <p className="text-[11px] text-gray-400 mt-1">
-                Fichier à placer dans <code className="font-mono">public/</code>
-              </p>
+              {uploadError && <p className="text-[11px] text-red-500 mt-1">{uploadError}</p>}
+              {selectedFile && (
+                <p className="text-[11px] text-gray-400 mt-1">{selectedFile.name}</p>
+              )}
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Catégorie</label>
-              <input
-                type="text"
-                placeholder="ex : Pokémon Gen 1"
+              <select
                 value={addForm.categorie}
                 onChange={e => setAddForm({ ...addForm, categorie: e.target.value })}
-                className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-gray-500"
-              />
+                className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-gray-500 bg-white"
+                required
+              >
+                <option value="" disabled>Choisir une catégorie…</option>
+                {CATEGORIES.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
             <div className="flex gap-2 pt-1">
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 cursor-pointer transition-colors"
+                disabled={uploading || !selectedFile}
+                className="px-4 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
               >
-                Ajouter
+                {uploading ? 'Upload…' : 'Ajouter'}
               </button>
               <button
                 type="button"
-                onClick={() => { setShowAdd(false); setAddForm({ nom: '', image: '', categorie: '' }) }}
+                onClick={() => { setShowAdd(false); setAddForm({ nom: '', categorie: '' }); setSelectedFile(null); setUploadError('') }}
                 className="px-4 py-1.5 border border-gray-300 text-sm text-gray-600 rounded-lg hover:border-gray-500 cursor-pointer transition-colors"
               >
                 Annuler
