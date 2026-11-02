@@ -3,8 +3,7 @@ services:
     build: .
     restart: unless-stopped
     env_file:
-      - path: .env.local
-        required: false
+      - .env
     volumes:
       - ./uploads:/data/uploads
     labels:
