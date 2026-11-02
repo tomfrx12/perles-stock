@@ -1,11 +1,17 @@
 const MARQUE_LABELS = { hama: 'Hama', artkal: 'Artkal', autres: 'Autres' }
 
-export default function CouleurRow({ entry, perle, stockVal, ok, dejaTermine, isAdmin, onUpdateCount, onRemove }) {
+export default function CouleurRow({ entry, perle, stockVal, ok, dejaTermine, isAdmin, onUpdateCount, onRemove, onGoToStock }) {
   if (!perle) return null
   return (
     <div className={`flex items-center gap-3 rounded-lg px-3 py-2 ${ok ? 'bg-white border-gray-100' : 'bg-red-50 border-red-200'} border`}>
       <div className="w-5 h-5 rounded shrink-0 border border-black/10" style={{ backgroundColor: perle.hex }} />
-      <span className="text-xs font-bold text-gray-600 w-12 shrink-0">{perle.code}</span>
+      <button
+        onClick={onGoToStock}
+        className="text-xs font-bold text-gray-600 w-12 shrink-0 text-left hover:text-blue-600 hover:underline transition-colors cursor-pointer"
+        title="Voir dans le stock"
+      >
+        {perle.code}
+      </button>
       <span className="text-xs text-gray-700 flex-1 truncate">{perle.nom}</span>
       <span className="text-[10px] text-gray-400 w-10 shrink-0">{MARQUE_LABELS[perle.marque]}</span>
       {isAdmin && !dejaTermine ? (

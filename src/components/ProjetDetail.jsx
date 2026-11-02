@@ -2,7 +2,7 @@ import { useState } from 'react'
 import CouleurForm from './CouleurForm'
 import CouleurRow from './CouleurRow'
 
-export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, dejaTermine, isAdmin, onBack, onAjouterCouleur, onUpdateCount, onRemoveCouleur, onValider }) {
+export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, dejaTermine, isAdmin, onBack, onGoToStock, onAjouterCouleur, onUpdateCount, onRemoveCouleur, onValider }) {
   const [confirming, setConfirming] = useState(false)
 
   const totalPerles = projetCouleurs.reduce((s, e) => s + e.count, 0)
@@ -73,6 +73,7 @@ export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, d
                       isAdmin={isAdmin}
                       onUpdateCount={val => onUpdateCount(idx, val)}
                       onRemove={() => onRemoveCouleur(idx)}
+                      onGoToStock={() => onGoToStock(entry.code, entry.marque)}
                     />
                   )
                 })}

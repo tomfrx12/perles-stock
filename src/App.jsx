@@ -58,9 +58,10 @@ export default function App() {
 
   const perlesFiltrees = search.trim()
     ? perlesVisibles.filter(p =>
-        p.code.toLowerCase().includes(search.trim().toLowerCase()) ||
-        p.nom.toLowerCase().includes(search.trim().toLowerCase()) ||
-        p.hex.toLowerCase().includes(search.trim().toLowerCase())
+        (marque === 'toutes' || p.marque === marque) &&
+        (p.code.toLowerCase().includes(search.trim().toLowerCase()) ||
+         p.nom.toLowerCase().includes(search.trim().toLowerCase()) ||
+         p.hex.toLowerCase().includes(search.trim().toLowerCase()))
       )
     : (marque === 'toutes' ? perlesVisibles : perlesVisibles.filter(p => p.marque === marque))
 
@@ -190,7 +191,13 @@ export default function App() {
 
         {page === 'projets' && (
           <main>
-            <ProjetsPage perles={perlesVisibles} stocks={stocks} batchUpdateStock={batchUpdateStock} isAdmin={isAdmin} />
+            <ProjetsPage
+              perles={perlesVisibles}
+              stocks={stocks}
+              batchUpdateStock={batchUpdateStock}
+              isAdmin={isAdmin}
+              onGoToStock={(code, marque) => { setPage('stock'); setSearch(code); setMarque(marque) }}
+            />
           </main>
         )}
 
