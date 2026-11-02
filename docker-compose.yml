@@ -11,6 +11,7 @@ services:
       - "traefik.http.routers.perles.rule=Host(`perles.tom-fourneaux.fr`)"
       - "traefik.http.routers.perles.entrypoints=websecure"
       - "traefik.http.routers.perles.tls.certresolver=myresolver"
+      - "traefik.http.services.perles.loadbalancer.server.port=3000"
 
       # BasicAuth — remplacer la valeur par le hash généré avec :
       #   htpasswd -nb tonnom tonmotdepasse | sed 's/\$/\$\$/g'
