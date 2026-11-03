@@ -13,7 +13,12 @@ export default function ProjetCard({ projet, termine, nbCouleurs, onClick }) {
         />
       </div>
       <div className="p-3">
-        <p className="text-sm font-semibold text-gray-800">{projet.nom}</p>
+        <p className="text-sm font-semibold text-gray-800">
+          {projet.numero != null && (
+            <span className="text-gray-400 font-normal mr-1">#{String(projet.numero).padStart(3, '0')}</span>
+          )}
+          {projet.nom}
+        </p>
         {termine ? (
           <span className="text-[11px] font-medium text-green-600">✓ Terminé</span>
         ) : nbCouleurs > 0 ? (
