@@ -1,26 +1,99 @@
-import { useState } from 'react'
-import CouleurForm from './CouleurForm'
-import CouleurRow from './CouleurRow'
+import { useState, useEffect } from 'react'
+import { useOutletContext, useNavigate, useParams, Navigate, Link } from 'react-router-dom'
+import { slugify } from '../utils/slug'
+import { fetchProjets, modifierProjet } from '../utils/projets'
+import CouleurForm from '../components/CouleurForm'
+import CouleurRow from '../components/CouleurRow'
 
-export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, dejaTermine, isAdmin, onBack, onGoToStock, onAjouterCouleur, onUpdateCount, onRemoveCouleur, onValider }) {
+export default function Projet() {
+  const { perles, stocks, batchUpdateStock, isAdmin } = useOutletContext()
+  const navigate = useNavigate()
+  const { slug } = useParams()
+  const [projets, setProjets] = useState(null)
+  const [error, setError] = useState('')
   const [confirming, setConfirming] = useState(false)
 
+  useEffect(() => {
+    fetchProjets()
+      .then(setProjets)
+      .catch(() => setError('Impossible de charger le projet.'))
+  }, [])
+
+  if (error) return <p className="text-sm text-red-500">{error}</p>
+  if (!projets) return <p className="text-sm text-gray-400">Chargement…</p>
+
+  const projet = projets.find(p => slugify(p.nom) === slug)
+  if (!projet) return <Navigate to="/projets" replace />
+
+  const projetCouleurs = projet.couleurs ?? []
+  const dejaTermine = projet.statut === 'terminé'
   const totalPerles = projetCouleurs.reduce((s, e) => s + e.count, 0)
-  const insuffisant = projetCouleurs.filter(e =>
-    (stocks[`${e.marque}-${e.code}`] ?? 0) < e.count
-  )
+  const insuffisant = projetCouleurs.filter(e => (stocks[`${e.marque}-${e.code}`] ?? 0) < e.count)
+
+  // Mise à jour immédiate de l'affichage, puis enregistrement côté serveur
+  async function update(data) {
+    const avant = projets
+    setProjets(prev => prev.map(p => p.id === projet.id ? { ...p, ...data } : p))
+    try {
+      await modifierProjet(projet.id, data)
+    } catch {
+      setProjets(avant)
+      alert("L'enregistrement a échoué.")
+      throw new Error('save failed')
+    }
+  }
+
+  function updateCouleurs(list) {
+    update({ couleurs: list }).catch(() => {})
+  }
+
+  function ajouterCouleur(bead, count) {
+    const existing = projetCouleurs.find(e => e.marque === bead.marque && e.code === bead.code)
+    updateCouleurs(existing
+      ? projetCouleurs.map(e => e === existing ? { ...e, count: e.count + count } : e)
+      : [...projetCouleurs, { marque: bead.marque, code: bead.code, count }])
+  }
+
+  function updateCount(idx, val) {
+    const n = Math.max(1, parseInt(val) || 1)
+    updateCouleurs(projetCouleurs.map((e, i) => i === idx ? { ...e, count: n } : e))
+  }
+
+  function removeCouleur(idx) {
+    updateCouleurs(projetCouleurs.filter((_, i) => i !== idx))
+  }
+
+  async function valider() {
+    if (projetCouleurs.length === 0) return
+    try {
+      await update({ statut: 'terminé' })
+    } catch {
+      return
+    }
+    batchUpdateStock(projetCouleurs.map(e => ({ marque: e.marque, code: e.code, delta: -e.count })))
+    navigate('/projets')
+  }
+
+  function goToStock(code, marque) {
+    navigate(`/?${new URLSearchParams({ q: code, marque })}`)
+  }
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <button
-          onClick={onBack}
-          className="text-sm text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+        <Link
+          to="/projets"
+          className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
         >
           ← Retour
-        </button>
+        </Link>
         <span className="text-gray-300">|</span>
-        <h2 className="text-xl font-bold">{projet.nom}</h2>
+        <h2 className="text-xl font-bold">
+          {projet.numero != null && (
+            <span className="text-gray-400 font-normal mr-2">#{String(projet.numero).padStart(3, '0')}</span>
+          )}
+          {projet.nom}
+        </h2>
         <span className="text-sm text-gray-400">{projet.categorie}</span>
         {dejaTermine && (
           <span className="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
@@ -41,7 +114,7 @@ export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, d
 
         <div className="flex-1 min-w-0">
           {isAdmin && !dejaTermine && (
-            <CouleurForm perles={perles} onAjouter={onAjouterCouleur} />
+            <CouleurForm perles={perles} onAjouter={ajouterCouleur} />
           )}
 
           {projetCouleurs.length > 0 ? (
@@ -71,9 +144,9 @@ export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, d
                       ok={stockVal >= entry.count}
                       dejaTermine={dejaTermine}
                       isAdmin={isAdmin}
-                      onUpdateCount={val => onUpdateCount(idx, val)}
-                      onRemove={() => onRemoveCouleur(idx)}
-                      onGoToStock={() => onGoToStock(entry.code, entry.marque)}
+                      onUpdateCount={val => updateCount(idx, val)}
+                      onRemove={() => removeCouleur(idx)}
+                      onGoToStock={() => goToStock(entry.code, entry.marque)}
                     />
                   )
                 })}
@@ -95,7 +168,7 @@ export default function ProjetDetail({ projet, projetCouleurs, perles, stocks, d
                         {insuffisant.length > 0 && ' Certaines couleurs sont en stock insuffisant.'}
                       </p>
                       <button
-                        onClick={() => { onValider(); setConfirming(false) }}
+                        onClick={valider}
                         className="px-4 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 cursor-pointer transition-colors"
                       >
                         Confirmer
