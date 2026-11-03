@@ -5,6 +5,7 @@ services:
     env_file:
       - .env
     volumes:
+      - ./data:/data
       - ./uploads:/data/uploads
     labels:
       - "traefik.enable=true"
