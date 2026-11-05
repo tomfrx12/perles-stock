@@ -4,10 +4,16 @@ export default function PinModal({ onSuccess, onClose }) {
   const [pinInput, setPinInput] = useState('')
   const [error, setError] = useState(false)
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    if (pinInput === import.meta.env.VITE_ADMIN_PIN) {
-      localStorage.setItem('perles-admin', '1')
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin: pinInput }),
+    })
+    if (res.ok) {
+      const { token } = await res.json()
+      localStorage.setItem('perles-admin-token', token)
       onSuccess()
     } else {
       setError(true)

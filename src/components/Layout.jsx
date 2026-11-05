@@ -36,13 +36,13 @@ export default function Layout() {
   }, [dark])
 
   const [stocks, setStocks] = useState(loadStock)
-  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('perles-admin') === '1')
+  const [isAdmin, setIsAdmin] = useState(() => !!localStorage.getItem('perles-admin-token'))
   const [showPin, setShowPin] = useState(false)
 
   const perlesVisibles = isAdmin ? perles : perles.filter(p => p.marque !== 'autres')
 
   function lockAdmin() {
-    localStorage.removeItem('perles-admin')
+    localStorage.removeItem('perles-admin-token')
     setIsAdmin(false)
   }
 
