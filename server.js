@@ -3,9 +3,13 @@ import multer from 'multer'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
+import crypto from 'crypto'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const DATA_DIR = process.env.DATA_DIR || '/data'
+const adminToken = process.env.ADMIN_PIN
+  ? crypto.createHash('sha256').update(process.env.ADMIN_PIN).digest('hex')
+  : null
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads')
 const PROJETS_FILE = path.join(DATA_DIR, 'projets.json')
 
@@ -60,7 +64,7 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
 })
 
 app.delete('/api/upload/:filename', (req, res) => {
-  if (!process.env.ADMIN_PIN || req.headers['x-admin-pin'] !== process.env.ADMIN_PIN) {
+  if (!adminToken || req.headers['x-admin-token'] !== adminToken) {
     return res.status(401).json({ error: 'Non autorisé' })
   }
   const filename = path.basename(req.params.filename)
@@ -68,6 +72,16 @@ app.delete('/api/upload/:filename', (req, res) => {
   if (!fs.existsSync(filepath)) return res.status(404).json({ error: 'Fichier introuvable' })
   fs.unlinkSync(filepath)
   res.json({ ok: true })
+})
+
+// ---- Auth ----
+
+app.post('/api/login', (req, res) => {
+  const { pin } = req.body ?? {}
+  if (!adminToken || pin !== process.env.ADMIN_PIN) {
+    return res.status(401).json({ error: 'Code incorrect' })
+  }
+  res.json({ token: adminToken })
 })
 
 // ---- Projets ----
@@ -87,7 +101,7 @@ function writeProjets(projets) {
 }
 
 function requireAdmin(req, res, next) {
-  if (!process.env.ADMIN_PIN || req.headers['x-admin-pin'] !== process.env.ADMIN_PIN) {
+  if (!adminToken || req.headers['x-admin-token'] !== adminToken) {
     return res.status(401).json({ error: 'Non autorisé' })
   }
   next()
