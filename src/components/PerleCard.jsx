@@ -4,7 +4,6 @@ export default function PerleCard({ perle, stock, isEditing, isAdmin, onIncremen
   const light = isLight(perle.hex)
   const textColor = light ? '#111' : '#fff'
   const subColor  = light ? '#444' : '#ccc'
-
   return (
     <div
       className="rounded-xl p-3 flex flex-col justify-between gap-1 min-h-30 shadow-sm"
