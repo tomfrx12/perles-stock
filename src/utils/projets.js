@@ -1,6 +1,8 @@
-const ADMIN_HEADERS = {
-  'Content-Type': 'application/json',
-  'x-admin-pin': import.meta.env.VITE_ADMIN_PIN,
+function adminHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'x-admin-token': localStorage.getItem('perles-admin-token') ?? '',
+  }
 }
 
 async function request(url, options) {
@@ -15,15 +17,15 @@ export async function fetchProjets() {
 }
 
 export function creerProjet(data) {
-  return request('/api/projets', { method: 'POST', headers: ADMIN_HEADERS, body: JSON.stringify(data) })
+  return request('/api/projets', { method: 'POST', headers: adminHeaders(), body: JSON.stringify(data) })
 }
 
 export function modifierProjet(id, data) {
-  return request(`/api/projets/${id}`, { method: 'PATCH', headers: ADMIN_HEADERS, body: JSON.stringify(data) })
+  return request(`/api/projets/${id}`, { method: 'PATCH', headers: adminHeaders(), body: JSON.stringify(data) })
 }
 
 export function supprimerProjet(id) {
-  return request(`/api/projets/${id}`, { method: 'DELETE', headers: ADMIN_HEADERS })
+  return request(`/api/projets/${id}`, { method: 'DELETE', headers: adminHeaders() })
 }
 
 // Envoie une seule fois au serveur les projets qui étaient stockés dans le navigateur
