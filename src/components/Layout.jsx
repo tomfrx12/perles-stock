@@ -36,8 +36,20 @@ export default function Layout() {
   }, [dark])
 
   const [stocks, setStocks] = useState(loadStock)
-  const [isAdmin, setIsAdmin] = useState(() => !!localStorage.getItem('perles-admin-token'))
+  const [isAdmin, setIsAdmin] = useState(false)
   const [showPin, setShowPin] = useState(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem('perles-admin-token')
+    if (!token) return
+    fetch('/api/me', { headers: { 'x-admin-token': token } })
+      .then(r => r.json())
+      .then(({ admin }) => {
+        if (admin) setIsAdmin(true)
+        else localStorage.removeItem('perles-admin-token')
+      })
+      .catch(() => {})
+  }, [])
 
   const perlesVisibles = isAdmin ? perles : perles.filter(p => p.marque !== 'autres')
 
