@@ -4,6 +4,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
 import crypto from 'crypto'
+import { rateLimit } from 'express-rate-limit'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const DATA_DIR = process.env.DATA_DIR || '/data'
@@ -76,12 +77,24 @@ app.delete('/api/upload/:filename', (req, res) => {
 
 // ---- Auth ----
 
-app.post('/api/login', (req, res) => {
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+app.post('/api/login', loginLimiter, (req, res) => {
   const { pin } = req.body ?? {}
   if (!adminToken || pin !== process.env.ADMIN_PIN) {
     return res.status(401).json({ error: 'Code incorrect' })
   }
   res.json({ token: adminToken })
+})
+
+app.get('/api/me', (req, res) => {
+  const valid = !!adminToken && req.headers['x-admin-token'] === adminToken
+  res.json({ admin: valid })
 })
 
 // ---- Projets ----
