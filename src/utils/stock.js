@@ -9,3 +9,24 @@ export function evalStock(value, currentStock) {
   }
   return Math.max(0, parseInt(v) || 0)
 }
+
+function adminHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'x-admin-token': localStorage.getItem('perles-admin-token') ?? '',
+  }
+}
+
+async function request(url, options) {
+  const res = await fetch(url, options)
+  if (!res.ok) throw new Error(`Erreur serveur (${res.status})`)
+  return res.json()
+}
+
+export function patchStock(updates) {
+  return request('/api/stock', { method: 'PATCH', headers: adminHeaders(), body: JSON.stringify(updates) })
+}
+
+export function fetchStock() {
+  return request('/api/stock')
+}

@@ -2,23 +2,10 @@ import { useState, useEffect } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
 import { perles, compteParMarque } from '../utils/perles'
-import { stockKey, evalStock } from '../utils/stock'
+import { stockKey, evalStock, fetchStock, patchStock } from '../utils/stock'
 import PinModal from './PinModal'
 
 const defaultStock = Object.fromEntries(perles.map(p => [stockKey(p.marque, p.code), p.stock]))
-
-function loadStock() {
-  try {
-    const saved = JSON.parse(localStorage.getItem('perles-stock') ?? '{}')
-    return { ...defaultStock, ...saved }
-  } catch {
-    return { ...defaultStock }
-  }
-}
-
-function saveStock(stocks) {
-  localStorage.setItem('perles-stock', JSON.stringify(stocks))
-}
 
 const PAGES = [
   { to: '/', label: 'Stock', end: true },
@@ -35,7 +22,7 @@ export default function Layout() {
     localStorage.setItem('perles-theme', dark ? 'dark' : 'light')
   }, [dark])
 
-  const [stocks, setStocks] = useState(loadStock)
+  const [stocks, setStocks] = useState({ ...defaultStock })
   const [isAdmin, setIsAdmin] = useState(false)
   const [showPin, setShowPin] = useState(false)
 
@@ -51,6 +38,12 @@ export default function Layout() {
       .catch(() => {})
   }, [])
 
+  useEffect(() => {
+    fetchStock()
+      .then(saved => setStocks({ ...defaultStock, ...saved }))
+      .catch(() => {})
+  }, [])
+
   const perlesVisibles = isAdmin ? perles : perles.filter(p => p.marque !== 'autres')
 
   function lockAdmin() {
@@ -58,14 +51,21 @@ export default function Layout() {
     setIsAdmin(false)
   }
 
+  // Applique un stock renvoyé par le serveur (ex. après validation d'un projet)
+  function applyServerStock(serverStock) {
+    setStocks({ ...defaultStock, ...serverStock })
+  }
+
   function batchUpdateStock(updates) {
     setStocks(prev => {
       const next = { ...prev }
+      const patch = {}
       for (const { marque, code, delta } of updates) {
         const k = stockKey(marque, code)
         next[k] = Math.max(0, (next[k] ?? 0) + delta)
+        patch[k] = next[k]
       }
-      saveStock(next)
+      patchStock(patch).catch(() => {})
       return next
     })
   }
@@ -78,7 +78,7 @@ export default function Layout() {
     const k = stockKey(marque, code)
     setStocks(prev => {
       const next = { ...prev, [k]: evalStock(value, prev[k] ?? 0) }
-      saveStock(next)
+      patchStock({ [k]: next[k] }).catch(() => {})
       return next
     })
   }
@@ -144,7 +144,7 @@ export default function Layout() {
           </nav>
         </header>
 
-        <Outlet context={{ perles: perlesVisibles, stocks, isAdmin, updateStock, setStockDirect, batchUpdateStock }} />
+        <Outlet context={{ perles: perlesVisibles, stocks, isAdmin, updateStock, setStockDirect, batchUpdateStock, applyServerStock }} />
 
       </div>
     </div>

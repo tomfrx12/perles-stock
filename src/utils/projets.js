@@ -28,6 +28,10 @@ export function supprimerProjet(id) {
   return request(`/api/projets/${id}`, { method: 'DELETE', headers: adminHeaders() })
 }
 
+export function validerProjet(id) {
+  return request(`/api/projets/${id}/valider`, { method: 'POST', headers: adminHeaders() })
+}
+
 // Envoie une seule fois au serveur les projets qui étaient stockés dans le navigateur
 async function migrerLocalStorage() {
   const raw = localStorage.getItem('perles-projets-custom')

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 import fs from 'fs'
 import crypto from 'crypto'
 import { rateLimit } from 'express-rate-limit'
+import { fileTypeFromFile } from 'file-type'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const DATA_DIR = process.env.DATA_DIR || '/data'
@@ -13,23 +14,26 @@ const adminToken = process.env.ADMIN_PIN
   : null
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads')
 const PROJETS_FILE = path.join(DATA_DIR, 'projets.json')
+const STOCK_FILE = path.join(DATA_DIR, 'stock.json')
 
 fs.mkdirSync(UPLOADS_DIR, { recursive: true })
 
+const ALLOWED_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp'])
+const ALLOWED_MIME = new Set(['image/png', 'image/jpeg', 'image/webp'])
+
 const storage = multer.diskStorage({
   destination: UPLOADS_DIR,
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname)
-    cb(null, `tmp-${Date.now()}${ext}`)
-  },
+  // Extension inconnue jusqu'à la vérification du contenu — on stocke en .tmp
+  filename: (req, file, cb) => cb(null, `tmp-${Date.now()}.tmp`),
 })
 
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) cb(null, true)
-    else cb(new Error('Fichier non image'))
+    const ext = path.extname(file.originalname).toLowerCase()
+    if (!ALLOWED_EXTENSIONS.has(ext)) return cb(new Error('Extension non autorisée'))
+    cb(null, true)
   },
 })
 
@@ -46,10 +50,22 @@ app.use(express.json())
 
 app.use('/uploads', express.static(UPLOADS_DIR))
 
-app.post('/api/upload', upload.single('image'), (req, res) => {
+app.post('/api/upload', upload.single('image'), async (req, res) => {
+  if (!adminToken || req.headers['x-admin-token'] !== adminToken) {
+    if (req.file) fs.unlinkSync(req.file.path)
+    return res.status(401).json({ error: 'Non autorisé' })
+  }
   if (!req.file) return res.status(400).json({ error: 'Aucun fichier reçu' })
 
-  const ext = path.extname(req.file.originalname)
+  // Vérification du contenu réel (magic bytes), indépendante du nom/MIME client
+  const type = await fileTypeFromFile(req.file.path)
+  if (!type || !ALLOWED_MIME.has(type.mime)) {
+    fs.unlinkSync(req.file.path)
+    return res.status(400).json({ error: 'Contenu non autorisé' })
+  }
+
+  // Extension canonique issue du contenu, pas du nom client
+  const ext = `.${type.ext}`
   const base = slugify(req.body.name || `${Date.now()}`)
   let finalName = `${base}${ext}`
   let dest = path.join(UPLOADS_DIR, finalName)
@@ -113,6 +129,17 @@ function writeProjets(projets) {
   fs.renameSync(tmp, PROJETS_FILE)
 }
 
+function readStock() {
+  try { return JSON.parse(fs.readFileSync(STOCK_FILE, 'utf8')) }
+  catch { return {} }
+}
+
+function writeStock(stock) {
+  const tmp = `${STOCK_FILE}.tmp`
+  fs.writeFileSync(tmp, JSON.stringify(stock, null, 2))
+  fs.renameSync(tmp, STOCK_FILE)
+}
+
 function requireAdmin(req, res, next) {
   if (!adminToken || req.headers['x-admin-token'] !== adminToken) {
     return res.status(401).json({ error: 'Non autorisé' })
@@ -125,6 +152,24 @@ function deleteUpload(image) {
   const filepath = path.join(UPLOADS_DIR, path.basename(image))
   if (fs.existsSync(filepath)) fs.unlinkSync(filepath)
 }
+
+// ---- Stock ----
+
+app.get('/api/stock', (req, res) => {
+  res.json(readStock())
+})
+
+app.patch('/api/stock', requireAdmin, (req, res) => {
+  const updates = req.body ?? {}
+  const stock = readStock()
+  for (const [k, v] of Object.entries(updates)) {
+    stock[k] = Math.max(0, Math.round(Number(v) || 0))
+  }
+  writeStock(stock)
+  res.json(stock)
+})
+
+// ---- Projets ----
 
 app.get('/api/projets', (req, res) => {
   res.json(readProjets())
@@ -156,6 +201,23 @@ app.patch('/api/projets/:id', requireAdmin, (req, res) => {
   res.json(projets[idx])
 })
 
+app.post('/api/projets/:id/valider', requireAdmin, (req, res) => {
+  const projets = readProjets()
+  const idx = projets.findIndex(p => p.id === req.params.id)
+  if (idx === -1) return res.status(404).json({ error: 'Projet introuvable' })
+  if (projets[idx].statut === 'terminé') return res.status(409).json({ error: 'Déjà validé' })
+
+  const stock = readStock()
+  for (const { marque, code, count } of projets[idx].couleurs ?? []) {
+    const k = `${marque}-${code}`
+    stock[k] = Math.max(0, (stock[k] ?? 0) - count)
+  }
+  projets[idx].statut = 'terminé'
+  writeStock(stock)
+  writeProjets(projets)
+  res.json({ projet: projets[idx], stock })
+})
+
 app.delete('/api/projets/:id', requireAdmin, (req, res) => {
   const projets = readProjets()
   const projet = projets.find(p => p.id === req.params.id)
@@ -163,6 +225,14 @@ app.delete('/api/projets/:id', requireAdmin, (req, res) => {
   deleteUpload(projet.image)
   writeProjets(projets.filter(p => p.id !== projet.id))
   res.json({ ok: true })
+})
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError || err.message === 'Extension non autorisée') {
+    return res.status(400).json({ error: err.message })
+  }
+  res.status(500).json({ error: 'Erreur serveur' })
 })
 
 app.use(express.static(path.join(__dirname, 'dist')))

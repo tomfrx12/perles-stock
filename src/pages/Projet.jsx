@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useOutletContext, useNavigate, useParams, Navigate, Link } from 'react-router-dom'
 import { slugify } from '../utils/slug'
-import { fetchProjets, modifierProjet } from '../utils/projets'
+import { fetchProjets, modifierProjet, validerProjet } from '../utils/projets'
 import CouleurForm from '../components/CouleurForm'
 import CouleurRow from '../components/CouleurRow'
 
 export default function Projet() {
-  const { perles, stocks, batchUpdateStock, isAdmin } = useOutletContext()
+  const { perles, stocks, isAdmin, applyServerStock } = useOutletContext()
   const navigate = useNavigate()
   const { slug } = useParams()
   const [projets, setProjets] = useState(null)
@@ -65,13 +65,16 @@ export default function Projet() {
 
   async function valider() {
     if (projetCouleurs.length === 0) return
+    const avant = projets
+    setProjets(prev => prev.map(p => p.id === projet.id ? { ...p, statut: 'terminé' } : p))
     try {
-      await update({ statut: 'terminé' })
+      const { stock } = await validerProjet(projet.id)
+      applyServerStock(stock)
+      navigate('/projets')
     } catch {
-      return
+      setProjets(avant)
+      alert("La validation a échoué.")
     }
-    batchUpdateStock(projetCouleurs.map(e => ({ marque: e.marque, code: e.code, delta: -e.count })))
-    navigate('/projets')
   }
 
   function goToStock(code, marque) {
