@@ -5,7 +5,6 @@
   { "code": "H18", "nom": "Noir",                     "hex": "#2e2f31", "groupe": "Blancs & Gris" },
   { "code": "H19", "nom": "Transparent clair",        "hex": "#d8d2ce", "groupe": "Blancs & Gris" },
   { "code": "H28", "nom": "Gris foncé",               "hex": "#363f38", "groupe": "Blancs & Gris" },
-  { "code": "H64", "nom": "Perle",                    "hex": "#efebe4", "groupe": "Blancs & Gris" },
   { "code": "H71", "nom": "Anthracite",               "hex": "#464541", "groupe": "Blancs & Gris" },
   { "code": "H77", "nom": "Beige",                    "hex": "#ede7df", "groupe": "Blancs & Gris" },
   { "code": "H109","nom": "Gris nuageux",             "hex": "#8a847f", "groupe": "Blancs & Gris" },
@@ -23,7 +22,6 @@
   { "code": "H22", "nom": "Bordeaux",                 "hex": "#a52d36", "groupe": "Rouges & Bordeaux" },
   { "code": "H29", "nom": "Magenta",                  "hex": "#b9395e", "groupe": "Rouges & Bordeaux" },
   { "code": "H30", "nom": "Lie-de-vin",               "hex": "#592f38", "groupe": "Rouges & Bordeaux" },
-  { "code": "H33", "nom": "Rouge vif",                "hex": "#ff3956", "groupe": "Rouges & Bordeaux" },
   { "code": "H82", "nom": "Lie-de-vin rosé",          "hex": "#962f5c", "groupe": "Rouges & Bordeaux" },
   { "code": "H114","nom": "Rouge cerise",             "hex": "#9a2c31", "groupe": "Rouges & Bordeaux" },
   { "code": "H118","nom": "Bordeaux rouge",           "hex": "#612932", "groupe": "Rouges & Bordeaux" },
@@ -41,7 +39,6 @@
   { "code": "H07", "nom": "Violet",                   "hex": "#694a82", "groupe": "Violets" },
   { "code": "H24", "nom": "Violet translucide",       "hex": "#683e9a", "groupe": "Violets" },
   { "code": "H45", "nom": "Mauve",                    "hex": "#886db9", "groupe": "Violets" },
-  { "code": "H74", "nom": "Lilas translucide",        "hex": "#5b55bd", "groupe": "Violets" },
   { "code": "H96", "nom": "Lilas",                    "hex": "#d4b1e3", "groupe": "Violets" },
   { "code": "H106","nom": "Lavande",                  "hex": "#ccc5ed", "groupe": "Violets" },
   { "code": "H108","nom": "Aubergine",                "hex": "#2a2536", "groupe": "Violets" },
@@ -73,7 +70,6 @@
   { "code": "H12", "nom": "Marron",                   "hex": "#534137", "groupe": "Bruns & Beiges" },
   { "code": "H20", "nom": "Brun foncé",               "hex": "#7f332a", "groupe": "Bruns & Beiges" },
   { "code": "H21", "nom": "Tan",                      "hex": "#a5693f", "groupe": "Bruns & Beiges" },
-  { "code": "H25", "nom": "Brun translucide",         "hex": "#87593d", "groupe": "Bruns & Beiges" },
   { "code": "H75", "nom": "Caramel",                  "hex": "#bf7b4d", "groupe": "Bruns & Beiges" },
   { "code": "H76", "nom": "Chocolat",                 "hex": "#663317", "groupe": "Bruns & Beiges" },
 
@@ -81,25 +77,13 @@
   { "code": "H14", "nom": "Jaune transparent",        "hex": "#e4aa32", "groupe": "Transparents" },
   { "code": "H15", "nom": "Bleu transparent",         "hex": "#487ed5", "groupe": "Transparents" },
   { "code": "H16", "nom": "Vert transparent",         "hex": "#37b876", "groupe": "Transparents" },
-  { "code": "H72", "nom": "Rose translucide",         "hex": "#f097b0", "groupe": "Transparents" },
-  { "code": "H73", "nom": "Turquoise translucide",    "hex": "#59aef5", "groupe": "Transparents" },
 
   { "code": "H32", "nom": "Fuchsia néon",             "hex": "#ff208d", "groupe": "Néons & Fluorescents" },
   { "code": "H34", "nom": "Jaune néon",               "hex": "#e5ef13", "groupe": "Néons & Fluorescents" },
   { "code": "H35", "nom": "Rouge néon",               "hex": "#ff2833", "groupe": "Néons & Fluorescents" },
   { "code": "H36", "nom": "Bleu néon",                "hex": "#2353b0", "groupe": "Néons & Fluorescents" },
   { "code": "H37", "nom": "Vert néon",                "hex": "#06b73c", "groupe": "Néons & Fluorescents" },
-  { "code": "H38", "nom": "Orange néon",              "hex": "#fd8600", "groupe": "Néons & Fluorescents" },
-  { "code": "H39", "nom": "Jaune fluorescent",        "hex": "#f1f21c", "groupe": "Néons & Fluorescents" },
-  { "code": "H40", "nom": "Orange fluorescent",       "hex": "#fe630b", "groupe": "Néons & Fluorescents" },
-  { "code": "H41", "nom": "Bleu fluorescent",         "hex": "#2659b2", "groupe": "Néons & Fluorescents" },
-  { "code": "H42", "nom": "Vert fluorescent",         "hex": "#0cbd51", "groupe": "Néons & Fluorescents" },
+  { "code": "H38", "nom": "Orange néon",              "hex": "#fd8600", "groupe": "Néons & Fluorescents" }
 
-  { "code": "H55", "nom": "Vert phosphorescent",      "hex": "#faf8ed", "groupe": "Phosphorescents" },
-  { "code": "H56", "nom": "Rose phosphorescent",      "hex": "#edbf9f", "groupe": "Phosphorescents" },
-  { "code": "H57", "nom": "Bleu phosphorescent",      "hex": "#c4d0e3", "groupe": "Phosphorescents" },
 
-  { "code": "H61", "nom": "Or métallique",            "hex": "#d99350", "groupe": "Métalliques" },
-  { "code": "H62", "nom": "Argent métallique",        "hex": "#48474a", "groupe": "Métalliques" },
-  { "code": "H63", "nom": "Bronze métallique",        "hex": "#42312f", "groupe": "Métalliques" }
 ]
