@@ -2,6 +2,7 @@ import autresData from '../data/perles-autres.json'
 import hamaData from '../data/perles-hama.json'
 import artkalData from '../data/perles-artkal.json'
 import hamaVariantes from '../data/hama-variantes.json'
+import artkalVariantes from '../data/artkal-variantes.json'
 
 export const perles = [
   ...autresData.map(p => ({ ...p, marque: 'autres', stock: 390 })),
@@ -31,7 +32,11 @@ const BOUTIQUES = {
     const variante = hamaVariantes[code]
     return `https://hama.dk/fr/products/2000-perles-mini-en-sachet${variante ? `?variant=${variante}` : ''}`
   },
-  artkal: code => `https://artkalbeads.com/search?q=${encodeURIComponent(code)}`,
+  // Artkal : sac de 7500 perles mini (src/data/artkal-variantes.json), pas de lien si la couleur n'y est pas vendue.
+  artkal: code => {
+    const produit = artkalVariantes[code]
+    return produit ? `https://www.artkalfusebeads.com/products/${produit}` : null
+  },
 }
 
 export function lienBoutique(perle) {
