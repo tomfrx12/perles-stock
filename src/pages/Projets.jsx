@@ -59,7 +59,11 @@ export default function Projets() {
       const formData = new FormData()
       formData.append('name', addForm.nom.trim())
       formData.append('image', selectedFile)
-      const res = await fetch('/api/upload', { method: 'POST', body: formData })
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'x-admin-token': localStorage.getItem('perles-admin-token') ?? '' },
+        body: formData,
+      })
       if (!res.ok) throw new Error('Erreur serveur')
       const { path: imagePath } = await res.json()
       const nouveau = await creerProjet({
