@@ -14,11 +14,13 @@ services:
       - "traefik.http.routers.perles.tls.certresolver=myresolver"
       - "traefik.http.services.perles.loadbalancer.server.port=3000"
 
-      # BasicAuth — remplacer la valeur par le hash généré avec :
-      #   htpasswd -nb tonnom tonmotdepasse | sed 's/\$/\$\$/g'
+      # BasicAuth — la valeur vient de BASIC_AUTH_USERS dans .env (non versionné).
+      # Générer avec :  htpasswd -nB tonnom
+      # puis dans .env, entre apostrophes simples (pas de doublement des $) :
+      #   BASIC_AUTH_USERS='tonnom:$2y$05$...'
       # Pour plusieurs utilisateurs, séparer par virgule.
       - "traefik.http.routers.perles.middlewares=perles-auth"
-      - "traefik.http.middlewares.perles-auth.basicauth.users=tom:$$apr1$$gdCmNr5c$$LDOYGf9QLXNkvvuYYju79."
+      - "traefik.http.middlewares.perles-auth.basicauth.users=${BASIC_AUTH_USERS:?BASIC_AUTH_USERS manquant dans .env}"
     networks:
       - web
 

@@ -22,14 +22,20 @@ npm run dev
 
 ## Déploiement (Docker + Traefik)
 
-1. Générer le hash du mot de passe :
+1. Générer le hash du mot de passe (mot de passe long, demandé de façon interactive) :
    ```bash
-   htpasswd -nb tonnom tonmotdepasse | sed 's/\$/\$\$/g'
+   htpasswd -nB tonnom   # paquet apache2-utils
    ```
 
-2. Mettre à jour `docker-compose.yml` : domaine et hash BasicAuth
+2. Ajouter la ligne obtenue dans `.env` (non versionné), entre apostrophes simples et sans doubler les `$` :
+   ```
+   BASIC_AUTH_USERS='tonnom:$2y$05$...'
+   ```
+   Plusieurs utilisateurs : séparer par une virgule. Sans cette variable, `docker compose` refuse de démarrer.
 
-3. Déployer :
+3. Adapter le domaine dans `docker-compose.yml` si besoin
+
+4. Déployer :
    ```bash
    docker compose up -d --build
    ```
